@@ -1,0 +1,17 @@
+{
+  "name": "name",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack serve --open",
+    "build": "webpack",
+    "post": "git subtree push --prefix dist origin gh-pages",
+    "install-deps": "npm install --save-dev copy-webpack-plugin css-loader html-webpack-plugin style-loader webpack webpack-cli webpack-dev-server babel-loader @babel/core @babel/preset-env"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {}
+}
