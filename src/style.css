@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Merriweather;
+}
+
+@font-face {
+  font-family: "Merriweather";
+  src: local("Merriweather Regular"), url("./fonts/MerriweatherSans.ttf");
+  font-weight: 400;
+}
+
+:root {
+  --main-projects-color: rgb(229, 243, 246);
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 550px;
+  min-height: 350px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 40vw;
+  border-radius: 5px;
+  border: 1px solid black;
+  min-width: 500px;
+  aspect-ratio: 15/9;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25%;
+  border: 1px solid black;
+}
+
+.app-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75%;
+  border: 1px solid black;
+}
+
+.search-go {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border: 1px solid green;
+  height: 60%;
+  width: 70%;
+  padding: 0 5px 0 5px;
+}
+
+input {
+  height: 50%;
+  width: 75%;
+  padding: 0 5px;
+}
+
+button {
+  height: 55%;
+  width: 15%;
+}
+
+.weather-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+  width: 70%;
+  min-height: 80%;
+  border: 1px solid rgb(216, 62, 62);
+}
+
+.today,
+.tommorow,
+.overmorrow {
+  /* width: 33.333%; */
+  border: 1px solid grey;
+  display: grid;
+  grid-template-rows: 1fr 4fr 4fr 1fr;
+}
+
+/* .day{
+    height: 10%;
+}
+
+.weather-icon{
+    height: 40%;
+} */
+
+.day,
+.weather-icon,
+.temperature,
+.weather-description {
+  border: 1px solid grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
