@@ -54,6 +54,8 @@ body {
   align-items: center;
   height: 75%;
   border: 1px solid black;
+  position: relative;
+  padding-top: 25px;
 }
 
 .search-go {
@@ -85,6 +87,31 @@ button {
   min-height: 80%;
   border: 1px solid rgb(216, 62, 62);
 }
+.location-header {
+  position: absolute;
+  top: 1%;
+}
+
+.celcius-far-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 14%;
+  right: 34px;
+  width: 16px;
+  height: 30px;
+  border: solid black 1px;
+  border-radius: 8px;
+  padding: 2px;
+}
+.toggle-circle {
+  border-radius: 6px;
+  width: 12px;
+  height: 12px;
+  border: solid red 1px;
+  cursor: pointer;
+}
 
 .today,
 .tommorow,
@@ -111,4 +138,27 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.toggle-up {
+  justify-content: flex-start;
+}
+
+.toggle-down {
+  justify-content: flex-end;
+}
+
+.fahrenheit-symbol,
+.celcius-symbol {
+  position: absolute;
+}
+
+.fahrenheit-symbol {
+  bottom: -20px;
+  left: 15px;
+}
+
+.celcius-symbol {
+  top: -15px;
+  left: 15px;
 }

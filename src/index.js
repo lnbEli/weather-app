@@ -1,13 +1,33 @@
 import "./style.css";
-
-getCurrentlocation();
+init();
 
 const goButton = document.querySelector("button");
+const toggleButton = document.querySelector(".toggle-circle");
 
+toggleButton.addEventListener("click", toggleCelciusFahrenheitDom);
 goButton.addEventListener("click", () => {
-  const location = document.querySelector("input").value;
-  renderWeatherForecast(location);
+  let location = document.querySelector("input");
+  renderWeatherForecast(location.value);
+  location.value = "";
 });
+
+function init() {
+  return new Promise(function (resolve, reject) {
+    try {
+      const currentLocation = getCurrentlocation();
+      resolve(currentLocation);
+    } catch (error) {
+      reject(error);
+    }
+  })
+    .then((coords) => {
+      return getCurrentCity(...coords);
+    })
+    .then(renderWeatherForecast)
+    .catch((error) => {
+      console.error("There was an error initialising", error);
+    });
+}
 
 function getCurrentlocation() {
   return new Promise(function (resolve, reject) {
@@ -16,10 +36,7 @@ function getCurrentlocation() {
     .then(function (response) {
       const lat = response.coords.latitude;
       const lng = response.coords.longitude;
-      return getCurrentCity(lat, lng);
-    })
-    .then((city) => {
-      renderWeatherForecast(city);
+      return [lat, lng];
     })
     .catch((error) => {
       throw error;
@@ -33,6 +50,9 @@ function getCurrentCity(lat, lng) {
     })
     .then((obj) => {
       return obj.city;
+    })
+    .catch((error) => {
+      console.error("Error caught when fetching coords", error);
     });
 }
 
@@ -46,8 +66,8 @@ function fetchWeatherForecast(location) {
       }
       return response.json();
     })
-    .then((weather) => {
-      return weather.forecast.forecastday;
+    .then((weatherObj) => {
+      return weatherObj;
     })
     .catch(function (error) {
       console.error(`Error HTTP`, error);
@@ -57,14 +77,24 @@ function fetchWeatherForecast(location) {
 
 function renderWeatherForecast(location) {
   fetchWeatherForecast(location)
-    .then(function (forecast) {
+    .then(function (weatherObj) {
+      const togglePosition = document.querySelector(".celcius-far-toggle");
+      const tempScale = togglePosition.classList.contains("toggle-up")
+        ? "c"
+        : "f";
+      const city = weatherObj.location.name;
+      const country = weatherObj.location.country;
+      const forecast = weatherObj.forecast.forecastday;
+      console.log(weatherObj);
       forecast.forEach((day, index) => {
-        const averageTemp = `${day.day.avgtemp_c}°`;
+        const averageTemp = day.day[`avgtemp_${tempScale}`];
         const weatherIcon = `https:${day.day.condition.icon}`;
         const description = day.day.condition.text;
         const dayIndex = index;
         renderDayDOM(averageTemp, weatherIcon, description, dayIndex);
       });
+      renderLocationHeadingDom(city, country);
+      renderDateHeadingsDom();
     })
     .catch(function (error) {
       console.error("Error rendering the weather:", error);
@@ -76,4 +106,83 @@ function renderDayDOM(temperature, icon, description, dayIndex) {
   day.querySelector(".temperature h2").textContent = temperature;
   day.querySelector(".weather-icon").children[0].src = icon;
   day.querySelector(".weather-description h6").textContent = description;
+}
+
+function renderLocationHeadingDom(city, country) {
+  const locationHeading = document.querySelector(".location-header");
+  locationHeading.textContent = `${city} - ${country}`;
+}
+
+function formatDateHeadings(howManyDaysInToTheFuture) {
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  const day = new Date();
+  day.setDate(day.getDate() + howManyDaysInToTheFuture);
+  const dayName =
+    daysOfWeek[new Date().getDay() - 1 + howManyDaysInToTheFuture];
+  const date = addOrdinalNumerSuffix(day.getDate());
+  console.log(`${dayName} ${date}`);
+  return `${dayName} ${date}`;
+}
+
+function addOrdinalNumerSuffix(number) {
+  const array = String(number).split("");
+  let numberAndSuffix;
+  const lastNumberInArray = array[array.length - 1];
+  if (lastNumberInArray === "1") {
+    numberAndSuffix = array.join("") + "st";
+  } else if (lastNumberInArray === "2") {
+    numberAndSuffix = array.join("") + "nd";
+  } else if (lastNumberInArray === "3") {
+    numberAndSuffix = array.join("") + "rd";
+  } else {
+    numberAndSuffix = array.join("") + "th";
+  }
+  return numberAndSuffix;
+}
+
+function renderDateHeadingsDom() {
+  const dateHeadings = document.querySelectorAll(".day h5");
+  dateHeadings.forEach((heading, index) => {
+    if (index <= 0) {
+      heading.textContent = "Today";
+    } else {
+      heading.textContent = formatDateHeadings(index);
+    }
+  });
+}
+
+function toggleCelciusFahrenheitDom() {
+  const toggle = document.querySelector(".celcius-far-toggle");
+  const temperatures = document.querySelectorAll(".temp-number");
+  const currentScale = toggle.classList.contains("toggle-up")
+    ? "celcius"
+    : "fahrenheit";
+  toggle.classList.toggle("toggle-up");
+  toggle.classList.toggle("toggle-down");
+
+  temperatures.forEach((temp) => {
+    temp.textContent = toggleValueCelciusFahrenheit(
+      Number(temp.textContent),
+      currentScale
+    );
+  });
+}
+
+function toggleValueCelciusFahrenheit(value, type) {
+  let answer;
+  if (type === "fahrenheit") {
+    answer = (value - 32) / (9 / 5);
+  } else {
+    answer = value * (9 / 5) + 32;
+  }
+  return String(answer.toFixed(1));
 }
