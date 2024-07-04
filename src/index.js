@@ -12,24 +12,17 @@ goButton.addEventListener("click", () => {
 });
 
 function init() {
-  return new Promise(function (resolve, reject) {
-    try {
-      const currentLocation = getCurrentlocation();
-      resolve(currentLocation);
-    } catch (error) {
-      reject(error);
-    }
-  })
-    .then((coords) => {
-      return getCurrentCity(...coords);
-    })
+  getCurrentlocation()
+    .then((coords) => getCurrentCity(...coords))
     .then(renderWeatherForecast)
     .catch((error) => {
       console.error("There was an error initialising", error);
+      renderWeatherForecast("London");
     });
 }
 
 function getCurrentlocation() {
+  toggleLoadingIconsOn();
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   })
@@ -49,10 +42,15 @@ function getCurrentCity(lat, lng) {
       return response.json();
     })
     .then((obj) => {
-      return obj.city;
+      if (obj.city === "Throttled! See geocode.xyz/pricing") {
+        throw new Error("Geocode look up throttled");
+      } else {
+        return obj.city;
+      }
     })
     .catch((error) => {
       console.error("Error caught when fetching coords", error);
+      return "London";
     });
 }
 
@@ -78,6 +76,7 @@ function fetchWeatherForecast(location) {
 function renderWeatherForecast(location) {
   fetchWeatherForecast(location)
     .then(function (weatherObj) {
+      toggleLoadingIconsOff();
       const togglePosition = document.querySelector(".celcius-far-toggle");
       const tempScale = togglePosition.classList.contains("toggle-up")
         ? "c"
@@ -85,7 +84,6 @@ function renderWeatherForecast(location) {
       const city = weatherObj.location.name;
       const country = weatherObj.location.country;
       const forecast = weatherObj.forecast.forecastday;
-      console.log(weatherObj);
       forecast.forEach((day, index) => {
         const averageTemp = day.day[`avgtemp_${tempScale}`];
         const weatherIcon = `https:${day.day.condition.icon}`;
@@ -103,7 +101,7 @@ function renderWeatherForecast(location) {
 
 function renderDayDOM(temperature, icon, description, dayIndex) {
   const day = document.querySelector(".weather-container").children[dayIndex];
-  day.querySelector(".temperature h2").textContent = temperature;
+  day.querySelector(".temperature h2").textContent = `${temperature}°`;
   day.querySelector(".weather-icon").children[0].src = icon;
   day.querySelector(".weather-description h6").textContent = description;
 }
@@ -129,7 +127,7 @@ function formatDateHeadings(howManyDaysInToTheFuture) {
   const dayName =
     daysOfWeek[new Date().getDay() - 1 + howManyDaysInToTheFuture];
   const date = addOrdinalNumerSuffix(day.getDate());
-  console.log(`${dayName} ${date}`);
+
   return `${dayName} ${date}`;
 }
 
@@ -170,8 +168,9 @@ function toggleCelciusFahrenheitDom() {
   toggle.classList.toggle("toggle-down");
 
   temperatures.forEach((temp) => {
+    let temperatureWithoutDegreeSymbol = removeDegreeSymbol(temp.textContent);
     temp.textContent = toggleValueCelciusFahrenheit(
-      Number(temp.textContent),
+      Number(temperatureWithoutDegreeSymbol),
       currentScale
     );
   });
@@ -184,5 +183,36 @@ function toggleValueCelciusFahrenheit(value, type) {
   } else {
     answer = value * (9 / 5) + 32;
   }
-  return String(answer.toFixed(1));
+  //Adds degree symbol
+  return addDegreeSymbol(String(answer.toFixed(1)));
+}
+
+function addDegreeSymbol(str) {
+  let strArray = str.split("");
+  strArray.push("°");
+  let stringWithDegreeSymbol = strArray.join("");
+  return stringWithDegreeSymbol;
+}
+
+function removeDegreeSymbol(str) {
+  let strArray = str.split("");
+  strArray.pop();
+  let stringWithoutDegreeSymbol = strArray.join("");
+  return stringWithoutDegreeSymbol;
+}
+
+function toggleLoadingIconsOff() {
+  const loaderIcons = document.querySelectorAll(".loader");
+  loaderIcons.forEach((element) => {
+    element.remove();
+  });
+}
+
+function toggleLoadingIconsOn() {
+  const weatherIcons = document.querySelectorAll(".weather-icon");
+  weatherIcons.forEach((element) => {
+    const div = document.createElement("div");
+    div.classList.add("loader");
+    element.appendChild(div);
+  });
 }
