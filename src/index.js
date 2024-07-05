@@ -1,26 +1,38 @@
 import "./style.css";
 init();
 
+// User Buttons
 const goButton = document.querySelector("button");
 const toggleButton = document.querySelector(".toggle-circle");
 
+//Button event listeners
 toggleButton.addEventListener("click", toggleCelciusFahrenheitDom);
-goButton.addEventListener("click", () => {
-  let location = document.querySelector("input");
-  renderWeatherForecast(location.value);
-  location.value = "";
-});
+goButton.addEventListener("click", handleGoButton);
 
+//Handles user location search
+function handleGoButton() {
+  let location = document.querySelector("input");
+  if (location.value.trim() === "") {
+    alert("Please enter location");
+  } else {
+    fetchWeatherForecast(location.value).then(renderWeatherForecastDom);
+    location.value = "";
+  }
+}
+
+//On start up
 function init() {
   getCurrentlocation()
     .then((coords) => getCurrentCity(...coords))
-    .then(renderWeatherForecast)
+    .then(fetchWeatherForecast)
+    .then(renderWeatherForecastDom)
     .catch((error) => {
       console.error("There was an error initialising", error);
-      renderWeatherForecast("London");
+      fetchWeatherForecast("London").then(renderWeatherForecastDom);
     });
 }
 
+//Async function that uses browser geolocation to access lat,lng
 function getCurrentlocation() {
   toggleLoadingIconsOn();
   return new Promise(function (resolve, reject) {
@@ -36,6 +48,7 @@ function getCurrentlocation() {
     });
 }
 
+//Async function thats uses API to reverse lookup city from lat,lng
 function getCurrentCity(lat, lng) {
   return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
     .then((response) => {
@@ -54,6 +67,7 @@ function getCurrentCity(lat, lng) {
     });
 }
 
+//Async function thats uses API to lookup weather object for city
 function fetchWeatherForecast(location) {
   const apiKey = "01e16955a751428aa40141715241906";
   const url = `http://api.weatherapi.com/v1/forecast.json?q=${location}&key=${apiKey}&days=3`;
@@ -73,32 +87,32 @@ function fetchWeatherForecast(location) {
     });
 }
 
-function renderWeatherForecast(location) {
-  fetchWeatherForecast(location)
-    .then(function (weatherObj) {
-      toggleLoadingIconsOff();
-      const togglePosition = document.querySelector(".celcius-far-toggle");
-      const tempScale = togglePosition.classList.contains("toggle-up")
-        ? "c"
-        : "f";
-      const city = weatherObj.location.name;
-      const country = weatherObj.location.country;
-      const forecast = weatherObj.forecast.forecastday;
-      forecast.forEach((day, index) => {
-        const averageTemp = day.day[`avgtemp_${tempScale}`];
-        const weatherIcon = `https:${day.day.condition.icon}`;
-        const description = day.day.condition.text;
-        const dayIndex = index;
-        renderDayDOM(averageTemp, weatherIcon, description, dayIndex);
-      });
-      renderLocationHeadingDom(city, country);
-      renderDateHeadingsDom();
-    })
-    .catch(function (error) {
-      console.error("Error rendering the weather:", error);
-    });
+//Renders weather data to Dom
+function renderWeatherForecastDom(weatherObj) {
+  const loadingImageExists = document.querySelector(".loader-text") !== null;
+  if (!loadingImageExists) {
+    removeWeatherDataDom();
+    toggleLoadingIconsOn();
+  }
+  toggleLoadingIconsOff();
+  const togglePosition = document.querySelector(".celcius-far-toggle");
+  const tempScale = togglePosition.classList.contains("toggle-up") ? "c" : "f";
+  const city = weatherObj.location.name;
+  const country = weatherObj.location.country;
+  const forecast = weatherObj.forecast.forecastday;
+
+  forecast.forEach((day, index) => {
+    const averageTemp = day.day[`avgtemp_${tempScale}`];
+    const weatherIcon = `https:${day.day.condition.icon}`;
+    const description = day.day.condition.text;
+    const dayIndex = index;
+    renderDayDOM(averageTemp, weatherIcon, description, dayIndex);
+  });
+  renderLocationHeadingDom(city, country);
+  renderDateHeadingsDom();
 }
 
+//Render
 function renderDayDOM(temperature, icon, description, dayIndex) {
   const day = document.querySelector(".weather-container").children[dayIndex];
   day.querySelector(".temperature h2").textContent = `${temperature}°`;
@@ -183,7 +197,6 @@ function toggleValueCelciusFahrenheit(value, type) {
   } else {
     answer = value * (9 / 5) + 32;
   }
-  //Adds degree symbol
   return addDegreeSymbol(String(answer.toFixed(1)));
 }
 
@@ -203,16 +216,33 @@ function removeDegreeSymbol(str) {
 
 function toggleLoadingIconsOff() {
   const loaderIcons = document.querySelectorAll(".loader");
+  const locationHeading = document.querySelector(".location-header");
+  locationHeading.classList.remove("loader-text");
   loaderIcons.forEach((element) => {
     element.remove();
   });
 }
 
 function toggleLoadingIconsOn() {
-  const weatherIcons = document.querySelectorAll(".weather-icon");
+  const weatherIcons = document.querySelectorAll(".weather-icon, .temp-number");
+  const locationHeading = document.querySelector(".location-header");
+  locationHeading.classList.add("loader-text");
   weatherIcons.forEach((element) => {
     const div = document.createElement("div");
     div.classList.add("loader");
     element.appendChild(div);
+  });
+}
+
+function removeWeatherDataDom() {
+  const elementsToClear = document.querySelectorAll(
+    ".weather-description h6,.temperature h2,.location-header,.weather-icon img"
+  );
+  elementsToClear.forEach((element) => {
+    if (element.tagName === "IMG") {
+      element.src = "";
+    } else {
+      element.textContent = "";
+    }
   });
 }
