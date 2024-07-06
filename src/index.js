@@ -6,7 +6,7 @@ const goButton = document.querySelector("button");
 const toggleButton = document.querySelector(".toggle-circle");
 
 //Button event listeners
-toggleButton.addEventListener("click", toggleCelciusFahrenheitDom);
+toggleButton.addEventListener("click", toggleCelsiusFahrenheitDom);
 goButton.addEventListener("click", handleGoButton);
 
 //Handles user location search
@@ -34,7 +34,7 @@ function init() {
 
 //Async function that uses browser geolocation to access lat,lng
 function getCurrentlocation() {
-  toggleLoadingIconsOn();
+  toggleLoadingIconsOnDom();
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   })
@@ -69,8 +69,8 @@ function getCurrentCity(lat, lng) {
 
 //Async function thats uses API to lookup weather object for city
 function fetchWeatherForecast(location) {
-  const apiKey = "01e16955a751428aa40141715241906";
-  const url = `http://api.weatherapi.com/v1/forecast.json?q=${location}&key=${apiKey}&days=3`;
+  const API_KEY = "01e16955a751428aa40141715241906";
+  const url = `http://api.weatherapi.com/v1/forecast.json?q=${location}&key=${API_KEY}&days=3`;
   return fetch(url)
     .then(function (response) {
       if (!response.ok) {
@@ -92,10 +92,10 @@ function renderWeatherForecastDom(weatherObj) {
   const loadingImageExists = document.querySelector(".loader-text") !== null;
   if (!loadingImageExists) {
     removeWeatherDataDom();
-    toggleLoadingIconsOn();
+    toggleLoadingIconsOnDom();
   }
-  toggleLoadingIconsOff();
-  const togglePosition = document.querySelector(".celcius-far-toggle");
+  toggleLoadingIconsOffDom();
+  const togglePosition = document.querySelector(".celsius-far-toggle");
   const tempScale = togglePosition.classList.contains("toggle-up") ? "c" : "f";
   const city = weatherObj.location.name;
   const country = weatherObj.location.country;
@@ -112,7 +112,7 @@ function renderWeatherForecastDom(weatherObj) {
   renderDateHeadingsDom();
 }
 
-//Render
+//Render one days weather details to Dom
 function renderDayDOM(temperature, icon, description, dayIndex) {
   const day = document.querySelector(".weather-container").children[dayIndex];
   day.querySelector(".temperature h2").textContent = `${temperature}°`;
@@ -120,11 +120,13 @@ function renderDayDOM(temperature, icon, description, dayIndex) {
   day.querySelector(".weather-description h6").textContent = description;
 }
 
+//Render location heading
 function renderLocationHeadingDom(city, country) {
   const locationHeading = document.querySelector(".location-header");
   locationHeading.textContent = `${city} - ${country}`;
 }
 
+//Returns day/date X days in to the future
 function formatDateHeadings(howManyDaysInToTheFuture) {
   const daysOfWeek = [
     "Monday",
@@ -145,6 +147,7 @@ function formatDateHeadings(howManyDaysInToTheFuture) {
   return `${dayName} ${date}`;
 }
 
+//Adds correct ordinal number suffix to number
 function addOrdinalNumerSuffix(number) {
   const array = String(number).split("");
   let numberAndSuffix;
@@ -161,6 +164,7 @@ function addOrdinalNumerSuffix(number) {
   return numberAndSuffix;
 }
 
+//Renders date headings to Dom
 function renderDateHeadingsDom() {
   const dateHeadings = document.querySelectorAll(".day h5");
   dateHeadings.forEach((heading, index) => {
@@ -172,34 +176,44 @@ function renderDateHeadingsDom() {
   });
 }
 
-function toggleCelciusFahrenheitDom() {
-  const toggle = document.querySelector(".celcius-far-toggle");
+//Toggles render between Fahrenheit and Celsius in Dom.
+function toggleCelsiusFahrenheitDom() {
+  const toggle = document.querySelector(".celsius-far-toggle");
   const temperatures = document.querySelectorAll(".temp-number");
   const currentScale = toggle.classList.contains("toggle-up")
-    ? "celcius"
+    ? "celsius"
     : "fahrenheit";
   toggle.classList.toggle("toggle-up");
   toggle.classList.toggle("toggle-down");
 
   temperatures.forEach((temp) => {
     let temperatureWithoutDegreeSymbol = removeDegreeSymbol(temp.textContent);
-    temp.textContent = toggleValueCelciusFahrenheit(
-      Number(temperatureWithoutDegreeSymbol),
+    temp.textContent = toggleValueCelsiusFahrenheit(
+      temperatureWithoutDegreeSymbol,
       currentScale
     );
   });
 }
 
-function toggleValueCelciusFahrenheit(value, type) {
-  let answer;
+//Converts between Fahrenheit and Celsius
+function toggleValueCelsiusFahrenheit(value, type) {
+  const CELSIUS_TO_FAHRENHEIT_FACTOR = 9 / 5;
+  const FAHRENHEIT_TO_CELSIUS_FACTOR = 5 / 9;
+  const FAHRENHEIT_FREEZING_POINT = 32;
+  let valueConverted;
+
   if (type === "fahrenheit") {
-    answer = (value - 32) / (9 / 5);
+    valueConverted =
+      (Number(value) - FAHRENHEIT_FREEZING_POINT) *
+      FAHRENHEIT_TO_CELSIUS_FACTOR;
   } else {
-    answer = value * (9 / 5) + 32;
+    valueConverted =
+      Number(value) * CELSIUS_TO_FAHRENHEIT_FACTOR + FAHRENHEIT_FREEZING_POINT;
   }
-  return addDegreeSymbol(String(answer.toFixed(1)));
+  return addDegreeSymbol(valueConverted.toFixed(1));
 }
 
+//Adds degree symbol to string
 function addDegreeSymbol(str) {
   let strArray = str.split("");
   strArray.push("°");
@@ -207,6 +221,7 @@ function addDegreeSymbol(str) {
   return stringWithDegreeSymbol;
 }
 
+//Removes degree symbol from string
 function removeDegreeSymbol(str) {
   let strArray = str.split("");
   strArray.pop();
@@ -214,7 +229,8 @@ function removeDegreeSymbol(str) {
   return stringWithoutDegreeSymbol;
 }
 
-function toggleLoadingIconsOff() {
+//Toggles loading icons off Dom
+function toggleLoadingIconsOffDom() {
   const loaderIcons = document.querySelectorAll(".loader");
   const locationHeading = document.querySelector(".location-header");
   locationHeading.classList.remove("loader-text");
@@ -223,7 +239,8 @@ function toggleLoadingIconsOff() {
   });
 }
 
-function toggleLoadingIconsOn() {
+//Toggles loading icons on Dom
+function toggleLoadingIconsOnDom() {
   const weatherIcons = document.querySelectorAll(".weather-icon, .temp-number");
   const locationHeading = document.querySelector(".location-header");
   locationHeading.classList.add("loader-text");
@@ -234,6 +251,7 @@ function toggleLoadingIconsOn() {
   });
 }
 
+//Removes all weather data from Dom
 function removeWeatherDataDom() {
   const elementsToClear = document.querySelectorAll(
     ".weather-description h6,.temperature h2,.location-header,.weather-icon img"
