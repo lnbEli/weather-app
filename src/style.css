@@ -35,7 +35,7 @@ body {
   flex-direction: column;
   width: 40vw;
   border-radius: 5px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   min-width: 500px;
   aspect-ratio: 15/9;
 }
@@ -45,7 +45,9 @@ body {
   justify-content: center;
   align-items: center;
   height: 25%;
-  border: 1px solid black;
+  border: 2px solid rgb(186, 184, 184);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .app-body {
@@ -53,7 +55,9 @@ body {
   justify-content: center;
   align-items: center;
   height: 75%;
-  border: 1px solid black;
+  border: 2px solid rgb(186, 184, 184);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   position: relative;
   padding-top: 25px;
 }
@@ -92,7 +96,7 @@ button {
   top: 1%;
 }
 
-.celcius-far-toggle {
+.celsius-far-toggle {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,6 +122,7 @@ button {
 .tommorow,
 .overmorrow {
   border: 1px solid grey;
+  border-radius: 5px;
   display: grid;
   grid-template-rows: 1fr 4fr 4fr 1fr;
 }
@@ -126,7 +131,7 @@ button {
 .weather-icon,
 .temperature,
 .weather-description {
-  border: 1px solid grey;
+  /* border: 1px solid grey; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -145,7 +150,7 @@ button {
 }
 
 .fahrenheit-symbol,
-.celcius-symbol {
+.celsius-symbol {
   position: absolute;
 }
 
@@ -154,7 +159,7 @@ button {
   left: 15px;
 }
 
-.celcius-symbol {
+.celsius-symbol {
   top: -15px;
   left: 15px;
 }
@@ -196,6 +201,7 @@ button {
 .loader-text:before {
   content: "Loading...";
 }
+
 @keyframes l1 {
   to {
     opacity: 0;

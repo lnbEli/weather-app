@@ -129,19 +129,18 @@ function renderLocationHeadingDom(city, country) {
 //Returns day/date X days in to the future
 function formatDateHeadings(howManyDaysInToTheFuture) {
   const daysOfWeek = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday",
   ];
 
   const day = new Date();
   day.setDate(day.getDate() + howManyDaysInToTheFuture);
-  const dayName =
-    daysOfWeek[new Date().getDay() - 1 + howManyDaysInToTheFuture];
+  const dayName = daysOfWeek[day.getDay()];
   const date = addOrdinalNumerSuffix(day.getDate());
 
   return `${dayName} ${date}`;
