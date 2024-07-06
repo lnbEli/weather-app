@@ -19,6 +19,35 @@ html,
 body {
   width: 100%;
   height: 100%;
+  position: relative;
+  min-height: 465px;
+}
+
+.header {
+  display: flex;
+  justify-content: baseline;
+  align-items: center;
+  position: absolute;
+  height: 60px;
+  width: 100vw;
+  border: 1px solid black;
+  align-self: baseline;
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 60px;
+  width: 100vw;
+  border: 1px solid black;
+  align-self: flex-end;
+}
+
+.header h1 {
+  padding-left: 30px;
 }
 
 body {
@@ -38,6 +67,9 @@ body {
   /* border: 1px solid black; */
   min-width: 500px;
   aspect-ratio: 15/9;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
 .footer {
@@ -48,6 +80,7 @@ body {
   border: 2px solid rgb(186, 184, 184);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  background-color: rgb(186, 184, 184);
 }
 
 .app-body {
@@ -59,17 +92,34 @@ body {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   position: relative;
-  padding-top: 25px;
+  padding-top: 35px;
+  padding-bottom: 15px;
+  background-color: rgb(197, 227, 232);
+}
+
+.weather-swatch-opacity-layer {
+  position: absolute;
+  /* background-image: url("./img/weather-img.webp"); */
+  background-size: auto;
+  position: absolute;
+  opacity: 0.3;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
 }
 
 .search-go {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  border: 1px solid green;
+  /* border: 1px solid rgb(7, 7, 7); */
+  border-radius: 5px;
   height: 60%;
   width: 70%;
   padding: 0 5px 0 5px;
+  /* background-color: rgb(131, 130, 130); */
+  background-color: rgb(197, 227, 232);
 }
 
 input {
@@ -84,30 +134,41 @@ button {
 }
 
 .weather-container {
+  z-index: 2;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 5px;
   width: 70%;
   min-height: 192px;
-  /* border: 1px solid rgb(216, 62, 62); */
+  border: 2px solid rgb(205, 203, 203);
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
 }
 .location-header {
   position: absolute;
-  top: 1%;
+  top: -5%;
+  background-color: white;
+  padding: 5px;
+  border: 1px solid rgb(205, 203, 203);
+  border-radius: 5px;
+  z-index: 2;
 }
 
 .celsius-far-toggle {
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: absolute;
   top: 14%;
   right: 34px;
   width: 16px;
   height: 30px;
-  border: solid black 1px;
+  border: solid rgb(131, 130, 130) 1px;
   border-radius: 8px;
   padding: 2px;
+  background-color: rgb(232, 229, 229);
 }
 
 .toggle-circle {
@@ -116,29 +177,55 @@ button {
   height: 12px;
   border: solid rgb(163, 161, 161) 1px;
   cursor: pointer;
+  background-color: rgb(131, 130, 130);
 }
 
 .today,
 .tommorow,
 .overmorrow {
-  border: 1px solid grey;
+  /* border: 1px solid grey; */
   border-radius: 5px;
   display: grid;
-  grid-template-rows: 1fr 4fr 4fr 1fr;
+  grid-template-rows: 1fr 2fr 1fr 1fr;
 }
 
 .day,
-.weather-icon,
-.temperature,
 .weather-description {
   /* border: 1px solid grey; */
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.day:after,
+.weather-description:after {
+  content: "";
+  background: black;
+  position: absolute;
+  left: 5%;
+  height: 1px;
+  width: 90%;
+}
+
+.weather-description:after {
+  top: 5px;
+}
+
+.day:after {
+  bottom: 5px;
+}
+
+.weather-icon,
+.temperature {
+  /* border: 1px solid grey; */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .day {
-  min-height: 19px;
+  min-height: 14px;
 }
 
 .toggle-up {
@@ -151,7 +238,27 @@ button {
 
 .fahrenheit-symbol,
 .celsius-symbol {
+  width: 28px;
+  height: 20px;
   position: absolute;
+  color: rgb(163, 161, 161);
+  border-radius: 15px;
+  text-align: center;
+  background-color: white;
+  border: 1px grey solid;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.disable-pointer {
+  pointer-events: none;
+  cursor: none;
+}
+
+.scale-symbol-selected {
+  /* border: 1px grey solid; */
+  box-shadow: 0px 2px grey;
+  opacity: 1;
 }
 
 .fahrenheit-symbol {
@@ -165,7 +272,7 @@ button {
 }
 
 .loader {
-  width: 50px;
+  width: 31px;
   --b: 8px;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -195,7 +302,7 @@ button {
 .loader-text {
   font-weight: normal;
   font-family: Merriweather, sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   animation: l1 1s linear infinite alternate;
 }
 .loader-text:before {
@@ -206,4 +313,8 @@ button {
   to {
     opacity: 0;
   }
+}
+
+button {
+  cursor: pointer;
 }

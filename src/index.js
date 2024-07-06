@@ -4,10 +4,31 @@ init();
 // User Buttons
 const goButton = document.querySelector("button");
 const toggleButton = document.querySelector(".toggle-circle");
+const celsiusFahrenheitButtons = document.querySelectorAll(
+  ".fahrenheit-symbol,.celsius-symbol"
+);
 
 //Button event listeners
-toggleButton.addEventListener("click", toggleCelsiusFahrenheitDom);
+toggleButton.addEventListener("click", () => {
+  toggleCelsiusFahrenheitDom();
+  disableCelciusFahrenheitButtonPointer();
+});
+
 goButton.addEventListener("click", handleGoButton);
+
+celsiusFahrenheitButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    toggleCelsiusFahrenheitDom();
+    disableCelciusFahrenheitButtonPointer();
+  });
+});
+
+function disableCelciusFahrenheitButtonPointer() {
+  const celsiusButton = document.querySelector(".celsius-symbol");
+  const fahrenheitButton = document.querySelector(".fahrenheit-symbol");
+  celsiusButton.classList.toggle("disable-pointer");
+  fahrenheitButton.classList.toggle("disable-pointer");
+}
 
 //Handles user location search
 function handleGoButton() {
@@ -100,6 +121,7 @@ function renderWeatherForecastDom(weatherObj) {
   const city = weatherObj.location.name;
   const country = weatherObj.location.country;
   const forecast = weatherObj.forecast.forecastday;
+  const todaysWeatherIcon = `https:${forecast[0].day.condition.icon}`;
 
   forecast.forEach((day, index) => {
     const averageTemp = day.day[`avgtemp_${tempScale}`];
@@ -110,6 +132,7 @@ function renderWeatherForecastDom(weatherObj) {
   });
   renderLocationHeadingDom(city, country);
   renderDateHeadingsDom();
+  renderBackgroundWeatherSwatch(todaysWeatherIcon);
 }
 
 //Render one days weather details to Dom
@@ -177,6 +200,7 @@ function renderDateHeadingsDom() {
 
 //Toggles render between Fahrenheit and Celsius in Dom.
 function toggleCelsiusFahrenheitDom() {
+  toggleCelsiusFahrenheitSelectedDom();
   const toggle = document.querySelector(".celsius-far-toggle");
   const temperatures = document.querySelectorAll(".temp-number");
   const currentScale = toggle.classList.contains("toggle-up")
@@ -262,4 +286,18 @@ function removeWeatherDataDom() {
       element.textContent = "";
     }
   });
+}
+
+function toggleCelsiusFahrenheitSelectedDom() {
+  const celsiusSymbol = document.querySelector(".celsius-symbol");
+  const fahrenheitSymbol = document.querySelector(".fahrenheit-symbol");
+  celsiusSymbol.classList.toggle("scale-symbol-selected");
+  fahrenheitSymbol.classList.toggle("scale-symbol-selected");
+}
+
+function renderBackgroundWeatherSwatch(url) {
+  const weatherSwatchLayer = document.querySelector(
+    ".weather-swatch-opacity-layer"
+  );
+  weatherSwatchLayer.style.backgroundImage = `url(${url})`;
 }
