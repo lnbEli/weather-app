@@ -326,10 +326,7 @@ a {
   color: #000;
 }
 
-/* target the element you want the animation on */
 .header div {
-  /* add these styles to make the text move smoothly */
-  display: inline-block;
   animation: slide-left 2s ease forwards;
 }
 
@@ -387,10 +384,15 @@ a {
   }
 }
 
+.header div h1 {
+  opacity: 30%;
+}
+
 .header div {
   position: relative;
 }
 .sun-logo {
+  filter: brightness(50%);
   z-index: 1;
   position: absolute;
   width: 64px;

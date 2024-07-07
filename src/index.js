@@ -8,6 +8,7 @@ const userInput = document.querySelector("input");
 const celsiusFahrenheitButtons = document.querySelectorAll(
   ".fahrenheit-symbol,.celsius-symbol"
 );
+const animatedLogoDiv = document.querySelector(".header div");
 
 //Button event listeners
 toggleButton.addEventListener("click", () => {
@@ -29,6 +30,14 @@ userInput.addEventListener("keyup", (event) => {
   if (event.key === "Enter") {
     handleGoButton();
   }
+});
+
+//Adjusts styles on animated heading
+animatedLogoDiv.addEventListener("animationend", () => {
+  const headerLogo = document.querySelector(".header div h1");
+  const sunLogo = document.querySelector(".sun-logo");
+  sunLogo.style.filter = "brightness(100%)";
+  headerLogo.style.opacity = "100%";
 });
 
 //Stops user clicking button that is already currently selected
