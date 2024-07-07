@@ -25,13 +25,14 @@ body {
 
 .header {
   display: flex;
-  justify-content: baseline;
+  justify-content: end;
   align-items: center;
   position: absolute;
   height: 60px;
   width: 100vw;
   border: 1px solid black;
   align-self: baseline;
+  background-color: rgb(197, 227, 232);
 }
 
 .footer-info {
@@ -44,6 +45,7 @@ body {
   width: 100vw;
   border: 1px solid black;
   align-self: flex-end;
+  background-color: rgb(197, 227, 232);
 }
 
 .header h1 {
@@ -77,10 +79,12 @@ body {
   justify-content: center;
   align-items: center;
   height: 25%;
-  border: 2px solid rgb(186, 184, 184);
+  /* border: 2px solid rgb(186, 184, 184); */
+  border: 2px solid rgb(33, 36, 133);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  background-color: rgb(186, 184, 184);
+  /* background-color: rgb(184, 184, 186); */
+  background-color: rgb(33, 36, 133);
 }
 
 .app-body {
@@ -99,7 +103,6 @@ body {
 
 .weather-swatch-opacity-layer {
   position: absolute;
-  /* background-image: url("./img/weather-img.webp"); */
   background-size: auto;
   position: absolute;
   opacity: 0.3;
@@ -273,22 +276,18 @@ button {
 
 .loader {
   width: 31px;
-  --b: 8px;
+  --f: 8px;
   aspect-ratio: 1;
   border-radius: 50%;
   padding: 1px;
   background: conic-gradient(#0000 10%, #336cf0) content-box;
-  -webkit-mask: repeating-conic-gradient(
-      #0000 0deg,
-      #000 1deg 20deg,
-      #0000 21deg 36deg
-    ),
+  mask: repeating-conic-gradient(#0000 0deg, #000 1deg 20deg, #0000 21deg 36deg),
     radial-gradient(
       farthest-side,
-      #0000 calc(100% - var(--b) - 1px),
-      #000 calc(100% - var(--b))
+      #0000 calc(100% - var(--f) - 1px),
+      #000 calc(100% - var(--f))
     );
-  -webkit-mask-composite: destination-in;
+  mask-composite: destination-in;
   mask-composite: intersect;
   animation: l4 1s infinite steps(10);
 }
@@ -317,4 +316,84 @@ button {
 
 button {
   cursor: pointer;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a {
+  color: #000;
+}
+
+/* target the element you want the animation on */
+.header div {
+  /* add these styles to make the text move smoothly */
+  display: inline-block;
+  animation: slide-left 2s ease forwards;
+}
+
+@keyframes slide-left {
+  100% {
+    transform: translateX(-85vw);
+  }
+}
+
+@media (max-width: 1600px) {
+  .header div {
+    animation: slide-left-1600 2s ease forwards;
+  }
+
+  .header div h1 {
+    font-size: 1.5em;
+  }
+
+  @keyframes slide-left-1600 {
+    100% {
+      transform: translateX(-80vw);
+    }
+  }
+}
+
+@media (max-width: 780px) {
+  .header div {
+    animation: slide-left-780 2s ease forwards;
+  }
+
+  .header div h1 {
+    font-size: 1.5em;
+  }
+
+  @keyframes slide-left-780 {
+    100% {
+      transform: translateX(-70vw);
+    }
+  }
+}
+
+@media (max-width: 300px) {
+  .header div {
+    font-size: 1.2em;
+    animation: slide-left-300 2s ease forwards;
+  }
+  .header div h1 {
+    font-size: 1.2em;
+  }
+
+  @keyframes slide-left-300 {
+    100% {
+      transform: translateX(-5vw);
+    }
+  }
+}
+
+.header div {
+  position: relative;
+}
+.sun-logo {
+  z-index: 1;
+  position: absolute;
+  width: 64px;
+  top: 10px;
+  right: -35px;
 }

@@ -3,17 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App</title>
+    <title>Document</title>
   <script defer src="runtime.js"></script><script defer src="main.js"></script></head>
   <body>
-    <div class="main-body">
-      <div class="top">
-        <img class="logo" src="./img/logo.png" alt="logo" />
+    <div class="header">
+      <div>
+        <h1>Weather App</h1>
+        <img class="sun-logo" src="./img/sun.png" alt="" />
       </div>
-      <div class="bottom">
-        <div class="left"></div>
-        <div class="center"></div>
-        <div class="right"></div>
+    </div>
+    <div class="footer-info">
+      <h6><a href="https://www.weatherapi.com/">Weather API</a></h6>
+      <h6><a href="https://geocode.xyz/">Geocode API</a></h6>
+      <h6><a href="https://github.com/lnbEli/weather-app">GitHub</a></h6>
+    </div>
+    <div class="app">
+      <div class="app-body">
+        <div class="celsius-far-toggle toggle-up">
+          <div><h5 class="fahrenheit-symbol">°F</h5></div>
+          <div>
+            <h5 class="celsius-symbol scale-symbol-selected disable-pointer">
+              °C
+            </h5>
+          </div>
+          <div class="toggle-circle"></div>
+        </div>
+        <div class="location-header"><h3></h3></div>
+        <div class="weather-swatch-opacity-layer"></div>
+        <div class="weather-container">
+          <div class="today">
+            <div class="day"><h5></h5></div>
+            <div class="weather-icon">
+              <img />
+            </div>
+            <div class="temperature">
+              <h2 class="temp-number"></h2>
+            </div>
+            <div class="weather-description"><h6></h6></div>
+          </div>
+          <div class="tommorow">
+            <div class="day"><h5></h5></div>
+            <div class="weather-icon"><img /></div>
+            <div class="temperature">
+              <h2 class="temp-number"></h2>
+            </div>
+            <div class="weather-description"><h6></h6></div>
+          </div>
+          <div class="overmorrow">
+            <div class="day"><h5></h5></div>
+            <div class="weather-icon"><img /></div>
+            <div class="temperature">
+              <h2 class="temp-number"></h2>
+            </div>
+            <div class="weather-description"><h6></h6></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="search-go">
+          <input id="location-input" type="text" placeholder="Enter location" />
+          <button>GO</button>
+        </div>
       </div>
     </div>
   </body>

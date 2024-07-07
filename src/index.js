@@ -4,6 +4,7 @@ init();
 // User Buttons
 const goButton = document.querySelector("button");
 const toggleButton = document.querySelector(".toggle-circle");
+const userInput = document.querySelector("input");
 const celsiusFahrenheitButtons = document.querySelectorAll(
   ".fahrenheit-symbol,.celsius-symbol"
 );
@@ -23,6 +24,14 @@ celsiusFahrenheitButtons.forEach((btn) => {
   });
 });
 
+//Allows User to hit return to submit search
+userInput.addEventListener("keyup", (event) => {
+  if (event.key === "Enter") {
+    handleGoButton();
+  }
+});
+
+//Stops user clicking button that is already currently selected
 function disableCelciusFahrenheitButtonPointer() {
   const celsiusButton = document.querySelector(".celsius-symbol");
   const fahrenheitButton = document.querySelector(".fahrenheit-symbol");
@@ -288,6 +297,7 @@ function removeWeatherDataDom() {
   });
 }
 
+//Renders selected scale to be highlighted in Dom
 function toggleCelsiusFahrenheitSelectedDom() {
   const celsiusSymbol = document.querySelector(".celsius-symbol");
   const fahrenheitSymbol = document.querySelector(".fahrenheit-symbol");
@@ -295,6 +305,7 @@ function toggleCelsiusFahrenheitSelectedDom() {
   fahrenheitSymbol.classList.toggle("scale-symbol-selected");
 }
 
+//Renders background swatch pattern Dom
 function renderBackgroundWeatherSwatch(url) {
   const weatherSwatchLayer = document.querySelector(
     ".weather-swatch-opacity-layer"
