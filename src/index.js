@@ -109,7 +109,7 @@ function getCurrentCity(lat, lng) {
 //Async function thats uses API to lookup weather object for city
 function fetchWeatherForecast(location) {
   const API_KEY = "01e16955a751428aa40141715241906";
-  const url = `http://api.weatherapi.com/v1/forecast.json?q=${location}&key=${API_KEY}&days=3`;
+  const url = `https://api.weatherapi.com/v1/forecast.json?q=${location}&key=${API_KEY}&days=3`;
   return fetch(url)
     .then(function (response) {
       if (!response.ok) {
